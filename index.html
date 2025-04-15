@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI化学工具箱 - 交互界面</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            /* 颜色变量 */
+            --primary-color: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary-color: #34a853;
+            --dark-color: #202124;
+            --gray-dark: #5f6368;
+            --gray-medium: #dadce0;
+            --gray-light: #f1f3f4;
+            --light-color: #f8f9fa;
+            --white: #ffffff;
+            
+            /* 间距变量 */
+            --spacing-xs: 4px;
+            --spacing-small: 8px;
+            --spacing-medium: 16px;
+            --spacing-large: 24px;
+            --spacing-xl: 32px;
+            
+            /* 字体变量 */
+            --font-main: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            --font-size-base: 14px;
+            --font-size-lg: 18px;
+            --font-size-xl: 24px;
+            
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3);
+            --shadow-md: 0 2px 6px 2px rgba(60,64,67,0.15);
+            --shadow-lg: 0 4px 12px 4px rgba(60,64,67,0.15);
+            
+            /* 圆角 */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+        
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            font-size: var(--font-size-base);
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+        
+        /* 顶部导航样式 */
+        .app-header {
+            background-color: var(--dark-color);
+            color: var(--white);
+            padding: var(--spacing-medium);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: var(--spacing-small);
+            color: var(--secondary-color);
+        }
+        
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-medium);
+        }
+        
+        .nav-button {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            padding: var(--spacing-xs) var(--spacing-small);
+            border-radius: var(--radius-sm);
+            transition: background-color 0.2s;
+        }
+        
+        .nav-button:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        /* 主容器布局 */
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 240px;
+            background-color: var(--white);
+            border-right: 1px solid var(--gray-medium);
+            padding: var(--spacing-medium) 0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            padding: var(--spacing-small) var(--spacing-medium);
+            margin: 0 var(--spacing-small);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .nav-menu li:hover {
+            background-color: var(--gray-light);
+        }
+        
+        .nav-menu li.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .nav-menu li i {
+            margin-right: var(--spacing-small);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding: var(--spacing-medium);
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        /* 主工作区样式 */
+        .workspace {
+            flex: 1;
+            padding: var(--spacing-large);
+            overflow-y: auto;
+            background-color: var(--light-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 工具箱区域 */
+        .toolbox-section {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-large);
+            margin-bottom: var(--spacing-large);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .section-title {
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-large);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: var(--spacing-small);
+            color: var(--primary-color);
+        }
+        
+        .toolbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: var(--spacing-large);
+        }
+        
+        .toolbox-item {
+            background-color: var(--gray-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-medium);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .toolbox-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .toolbox-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-medium);
+            color: var(--white);
+            font-size: 24px;
+        }
+        
+        .toolbox-name {
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .toolbox-desc {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+        
+        /* 案例库区域 */
+        .case-library {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-large);
+            margin-bottom: var(--spacing-large);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-medium);
+        }
+        
+        .case-card {
+            border: 1px solid var(--gray-medium);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .case-image {
+            height: 120px;
+            background-color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-dark);
+        }
+        
+        .case-content {
+            padding: var(--spacing-medium);
+        }
+        
+        .case-title {
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .case-category {
+            font-size: 12px;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-small);
+        }
+        
+        .case-desc {
+            font-size: 13px;
+            color: var(--gray-dark);
+            margin-bottom: var(--spacing-medium);
+        }
+        
+        /* AI聊天框 */
+        .ai-chatbox {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+            margin-top: auto;
+        }
+        
+        .chat-header {
+            padding: var(--spacing-medium);
+            border-bottom: 1px solid var(--gray-medium);
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-header i {
+            margin-right: var(--spacing-small);
+            color: var(--primary-color);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: var(--spacing-medium);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: var(--spacing-medium);
+            max-width: 80%;
+            padding: var(--spacing-medium);
+            border-radius: var(--radius-md);
+        }
+        
+        .message.ai {
+            align-self: flex-start;
+            background-color: var(--gray-light);
+            border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+        }
+        
+        .message.user {
+            align-self: flex-end;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: var(--radius-md) 0 var(--radius-md) var(--radius-md);
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: var(--spacing-medium);
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: var(--spacing-medium);
+            border: 1px solid var(--gray-medium);
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            outline: none;
+        }
+        
+        .chat-input button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 0 var(--spacing-large);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .chat-input button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: var(--spacing-large);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: var(--spacing-medium);
+            right: var(--spacing-medium);
+            font-size: var(--font-size-lg);
+            cursor: pointer;
+            color: var(--gray-dark);
+        }
+        
+        .modal-title {
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-large);
+            color: var(--primary-dark);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                padding: 0;
+                overflow-x: auto;
+            }
+            
+            .nav-menu {
+                display: flex;
+            }
+            
+            .nav-menu li {
+                white-space: nowrap;
+            }
+            
+            .sidebar-footer {
+                display: none;
+            }
+            
+            .toolbox-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: var(--spacing-medium);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="app-header">
+        <div class="logo">
+            <i class="fas fa-flask logo-icon"></i>
+            <span>AI化学工具箱</span>
+        </div>
+        <nav class="user-nav">
+            <button class="nav-button" id="help-button"><i class="fas fa-question-circle"></i> 帮助</button>
+            <button class="nav-button" id="settings-button"><i class="fas fa-cog"></i> 设置</button>
+            <div class="user-avatar" id="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+        </nav>
+    </header>
+
+    <div class="app-container">
+        <!-- 左侧导航 -->
+        <aside class="sidebar">
+            <ul class="nav-menu">
+                <li class="active" data-section="home">
+                    <i class="fas fa-home"></i>
+                    <span>首页</span>
+                </li>
+                <li data-section="toolbox">
+                    <i class="fas fa-toolbox"></i>
+                    <span>工具箱</span>
+                </li>
+                <li data-section="cases">
+                    <i class="fas fa-book"></i>
+                    <span>案例库</span>
+                </li>
+                <li data-section="ai-lab">
+                    <i class="fas fa-robot"></i>
+                    <span>AI实验室</span>
+                </li>
+                <li data-section="data-analysis">
+                    <i class="fas fa-chart-line"></i>
+                    <span>数据分析</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-name">访客用户</div>
+                    <div class="user-status">未登录</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主工作区 -->
+        <main class="workspace">
+            <!-- 工具箱区域 -->
+            <div class="toolbox-section" id="toolbox-section">
+                <div class="section-title">
+                    <i class="fas fa-toolbox"></i>
+                    <span>化学工具箱</span>
+                </div>
+                
+                <div class="toolbox-grid">
+                    <!-- 根据报告中的工具箱功能添加具体项目 -->
+                    <div class="toolbox-item" data-tool="orbital">
+                        <div class="toolbox-icon">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <div class="toolbox-name">分子轨道可视化</div>
+                        <div class="toolbox-desc">原子轨道分布图和电子云可视化</div>
+                    </div>
+                    
+                    <div class="toolbox-item" data-tool="titration">
+                        <div class="toolbox-icon">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <div class="toolbox-name">酸碱滴定优化</div>
+                        <div class="toolbox-desc">利用AI优化实验减小误差</div>
+                    </div>
+                    
+                    <div class="toolbox-item" data-tool="electrochemistry">
+                        <div class="toolbox-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="toolbox-name">电化学参数计算</div>
+                        <div class="toolbox-desc">最小二乘迭代解法计算动力学参数</div>
+                    </div>
+                    
+                    <div class="toolbox-item" data-tool="reaction-path">
+                        <div class="toolbox-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="toolbox-name">反应路径规划</div>
+                        <div class="toolbox-desc">基于多智能体系统的合成路径优化</div>
+                    </div>
+                    
+                    <div class="toolbox-item" data-tool="kinetics">
+                        <div class="toolbox-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="toolbox-name">反应动力学模拟</div>
+                        <div class="toolbox-desc">F+HCl碰撞解离过程动态展示</div>
+                    </div>
+                    
+                    <div class="toolbox-item" data-tool="catalyst">
+                        <div class="toolbox-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="toolbox-name">催化剂预测</div>
+                        <div class="toolbox-desc">机器学习算法选择合成氨催化剂</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 案例库区域 -->
+            <div class="case-library" id="case-library">
+                <div class="section-title">
+                    <i class="fas fa-book"></i>
+                    <span>案例库</span>
+                </div>
+                
+                <div class="case-grid">
+                    <div class="case-card" data-case="orbital-case">
+                        <div class="case-image">
+                            <i class="fas fa-atom fa-3x"></i>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-title">氢原子轨道可视化</div>
+                            <div class="case-category">量子化学 · 可视化</div>
+                            <div class="case-desc">展示氢原子不同量子数的径向分布图和电子云分布</div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-card" data-case="titration-case">
+                        <div class="case-image">
+                            <i class="fas fa-vial fa-3x"></i>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-title">酸碱滴定误差优化</div>
+                            <div class="case-category">分析化学 · AI优化</div>
+                            <div class="case-desc">利用AI算法减小酸碱滴定实验的系统误差</div>
+                        </div>
+                    </div>
+                    
+                    <div class="case-card" data-case="electrochemistry-case">
+                        <div class="case-image">
+                            <i class="fas fa-bolt fa-3x"></i>
+                        </div>
+                        <div class="case-content">
+                            <div class="case-title">电化学动力学计算</div>
+                            <div class="case-category">电化学 · 参数计算</div>
+                            <div class="case-desc">最小二乘迭代解法求解电化学动力学参数</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI聊天框 -->
+            <div class="ai-chatbox" id="ai-chatbox">
+                <div class="chat-header">
+                    <i class="fas fa-robot"></i>
+                    <span>化学AI助手</span>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message ai">
+                        您好！我是化学AI助手，可以回答您关于化学计算、分子可视化等各种问题。
+                    </div>
+                    <div class="message ai">
+                        例如，您可以问我："如何计算电化学动力学参数？" 或 "展示水分子的3D结构"。
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="输入您的问题...">
+                    <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 模态框 -->
+    <div class="modal" id="tool-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-title" id="modal-title">工具详情</div>
+            <div id="modal-content">
+                <!-- 动态内容将在这里显示 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航菜单点击事件
+            const navItems = document.querySelectorAll('.nav-menu li');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有active类
+                    navItems.forEach(i => i.classList.remove('active'));
+                    // 添加当前active类
+                    this.classList.add('active');
+                    
+                    // 获取对应的section
+                    const section = this.getAttribute('data-section');
+                    
+                    // 隐藏所有内容区域
+                    document.querySelectorAll('.workspace > *').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    
+                    // 显示选中的内容区域
+                    if (section === 'home') {
+                        document.getElementById('toolbox-section').style.display = 'block';
+                        document.getElementById('case-library').style.display = 'block';
+                        document.getElementById('ai-chatbox').style.display = 'flex';
+                    } else if (section === 'toolbox') {
+                        document.getElementById('toolbox-section').style.display = 'block';
+                        document.getElementById('case-library').style.display = 'none';
+                        document.getElementById('ai-chatbox').style.display = 'none';
+                    } else if (section === 'cases') {
+                        document.getElementById('toolbox-section').style.display = 'none';
+                        document.getElementById('case-library').style.display = 'block';
+                        document.getElementById('ai-chatbox').style.display = 'none';
+                    } else if (section === 'ai-lab') {
+                        document.getElementById('toolbox-section').style.display = 'none';
+                        document.getElementById('case-library').style.display = 'none';
+                        document.getElementById('ai-chatbox').style.display = 'flex';
+                    }
+                });
+            });
+            
+            // 工具箱项目点击事件
+            const toolboxItems = document.querySelectorAll('.toolbox-item');
+            toolboxItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tool = this.getAttribute('data-tool');
+                    openToolModal(tool);
+                });
+            });
+            
+            // 案例卡片点击事件
+            const caseCards = document.querySelectorAll('.case-card');
+            caseCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const caseId = this.getAttribute('data-case');
+                    openCaseModal(caseId);
+                });
+            });
+            
+            // 模态框关闭按钮
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                document.getElementById('tool-modal').style.display = 'none';
+            });
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === document.getElementById('tool-modal')) {
+                    document.getElementById('tool-modal').style.display = 'none';
+                }
+            });
+            
+            // AI聊天功能
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-message');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            sendButton.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // 帮助按钮
+            document.getElementById('help-button').addEventListener('click', function() {
+                alert('欢迎使用AI化学工具箱！\n\n左侧导航可以切换不同功能区域，点击工具箱中的项目可以查看详情，AI助手可以回答您的化学问题。');
+            });
+            
+            // 设置按钮
+            document.getElementById('settings-button').addEventListener('click', function() {
+                alert('设置功能将在后续版本中提供');
+            });
+            
+            // 用户头像
+            document.getElementById('user-avatar').addEventListener('click', function() {
+                alert('用户登录功能将在后续版本中提供');
+            });
+            
+            // 打开工具模态框
+            function openToolModal(tool) {
+                const modal = document.getElementById('tool-modal');
+                const modalTitle = document.getElementById('modal-title');
+                const modalContent = document.getElementById('modal-content');
+                
+                // 根据工具类型设置内容和标题
+                switch(tool) {
+                    case 'orbital':
+                        modalTitle.textContent = '分子轨道可视化工具';
+                        modalContent.innerHTML = `
+                            <h3>原子轨道分布图和电子云可视化</h3>
+                            <p>此工具可以展示不同量子数的原子轨道分布图和电子云密度图。</p>
+                            <div style="background-color: #f5f5f5; height: 200px; display: flex; justify-content: center; align-items: center; margin: 20px 0; border-radius: 8px;">
+                                <p>这里将显示3D分子轨道可视化</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantum-numbers">选择量子数：</label>
+                                <select id="quantum-numbers" class="form-control">
+                                    <option value="1s">1s轨道</option>
+                                    <option value="2s">2s轨道</option>
+                                    <option value="2p">2p轨道</option>
+                                    <option value="3d">3d轨道</option>
+                                </select>
+                            </div>
+                            <button class="visualize-button" style="padding: 10px 20px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                                可视化
+                            </button>
+                        `;
+                        break;
+                        
+                    case 'titration':
+                        modalTitle.textContent = '酸碱滴定优化工具';
+                        modalContent.innerHTML = `
+                            <h3>利用AI优化酸碱滴定实验</h3>
+                            <p>此工具可以通过AI算法分析滴定数据，自动校正误差，提高实验精度。</p>
+                            <div style="background-color: #f5f5f5; height: 200px; display: flex; justify-content: center; align-items: center; margin: 20px 0; border-radius: 8px;">
+                                <p>这里将显示滴定曲线和优化结果</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="titration-data">上传滴定数据：</label>
+                                <input type="file" id="titration-data" class="form-control">
+                            </div>
+                            <button class="optimize-button" style="padding: 10px 20px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                                开始优化
+                            </button>
+                        `;
+                        break;
+                        
+                    case 'electrochemistry':
+                        modalTitle.textContent = '电化学参数计算工具';
+                        modalContent.innerHTML = `
+                            <h3>最小二乘迭代解法计算动力学参数</h3>
+                            <p>此工具可以计算交换电流密度、传递系数等电化学动力学参数。</p>
+                            <div style="background-color: #f5f5f5; height: 200px; display: flex; justify-content: center; align-items: center; margin: 20px 0; border-radius: 8px;">
+                                <p>这里将显示电化学数据图表</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="voltage-data">电压数据：</label>
+                                <input type="text" id="voltage-data" class="form-control" placeholder="输入电压数据，用逗号分隔">
+                            </div>
+                            <div class="form-group">
+                                <label for="current-data">电流数据：</label>
+                                <input type="text" id="current-data" class="form-control" placeholder="输入电流数据，用逗号分隔">
+                            </div>
+                            <button class="calculate-button" style="padding: 10px 20px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                                计算参数
+                            </button>
+                        `;
+                        break;
+                        
+                    // 其他工具...
+                    default:
+                        modalTitle.textContent = '工具详情';
+                        modalContent.innerHTML = '<p>此工具详情将在后续版本中提供</p>';
+                }
+                
+                modal.style.display = 'flex';
+            }
+            
+            // 打开案例模态框
+            function openCaseModal(caseId) {
+                const modal = document.getElementById('tool-modal');
+                const modalTitle = document.getElementById('modal-title');
+                const modalContent = document.getElementById('modal-content');
+                
+                // 根据案例ID设置内容和标题
+                switch(caseId) {
+                    case 'orbital-case':
+                        modalTitle.textContent = '氢原子轨道可视化案例';
+                        modalContent.innerHTML = `
+                            <h3>氢原子不同量子数的径向分布图和电子云分布</h3>
+                            <p>此案例展示了如何利用我们的工具箱可视化氢原子的不同轨道。</p>
+                            <div style="background-color: #f5f5f5; height: 200px; display: flex; justify-content: center; align-items: center; margin: 20px 0; border-radius: 8px;">
+                                <p>这里将显示氢原子轨道可视化示例</p>
+                            </div>
+                            <h4>案例说明：</h4>
+                            <ul>
+                                <li>选择不同的主量子数n和角量子数l</li>
+                                <li>观察径向分布函数的变化</li>
+                                <li>查看3D电子云分布</li>
+                                <li>比较不同轨道的形状和节面</li>
+                            </ul>
+                            <button class="try-button" style="padding: 10px 20px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                                尝试此案例
+                            </button>
+                        `;
+                        break;
+                        
+                    case 'titration-case':
+                        modalTitle.textContent = '酸碱滴定误差优化案例';
+                        modalContent.innerHTML = `
+                            <h3>利用AI算法减小酸碱滴定实验的系统误差</h3>
+                            <p>此案例展示了如何通过AI优化酸碱滴定实验。</p>
+                            <div style="background-color: #f5f5f5; height: 200px; display: flex; justify-content: center; align-items: center; margin: 20px 0; border-radius: 8px;">
+                                <p>这里将显示滴定曲线优化前后对比</p>
+                            </div>
+                            <h4>案例说明：</h4>
+                            <ul>
+                                <li>上传实验原始数据</li>
+                                <li>AI分析误差来源</li>
+                                <li>自动校正滴定终点</li>
+                                <li>生成优化后的滴定曲线</li>
+                            </ul>
+                            <button class="try-button" style="padding: 10px 20px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                                尝试此案例
+                            </button>
+                        `;
+                        break;
+                        
+                    // 其他案例...
+                    default:
+                        modalTitle.textContent = '案例详情';
+                        modalContent.innerHTML = '<p>此案例详情将在后续版本中提供</p>';
+                }
+                
+                modal.style.display = 'flex';
+            }
+            
+            // 发送聊天消息
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message === '') return;
+                
+                // 添加用户消息
+                addMessage(message, 'user');
+                chatInput.value = '';
+                
+                // 模拟AI回复
+                setTimeout(() => {
+                    const responses = [
+                        "这是一个很好的问题。在化学工具箱中，您可以使用分子轨道可视化工具来查看不同轨道的形状和分布。",
+                        "根据我的分析，您提到的电化学参数可以通过工具箱中的电化学参数计算工具来求解。",
+                        "酸碱滴定优化工具可以帮助您减小实验误差，提高测量精度。",
+                        "我建议您查看案例库中的相关案例，那里有详细的操作步骤和示例。",
+                        "这个问题涉及到多个化学概念，您是否需要更详细的解释？"
+                    ];
+                    
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(randomResponse, 'ai');
+                }, 1000);
+            }
+            
+            // 添加聊天消息
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', sender);
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
