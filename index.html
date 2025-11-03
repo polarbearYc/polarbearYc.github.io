@@ -4,465 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI化学工具箱 - 交互界面</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 外部 CSS 和字体 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            /* 颜色变量 */
-            --primary-color: #1a73e8;
-            --primary-dark: #0d47a1;
-            --secondary-color: #34a853;
-            --dark-color: #202124;
-            --gray-dark: #5f6368;
-            --gray-medium: #dadce0;
-            --gray-light: #f1f3f4;
-            --light-color: #f8f9fa;
-            --white: #ffffff;
-            
-            /* 间距变量 */
-            --spacing-xs: 4px;
-            --spacing-small: 8px;
-            --spacing-medium: 16px;
-            --spacing-large: 24px;
-            --spacing-xl: 32px;
-            
-            /* 字体变量 */
-            --font-main: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            --font-size-base: 14px;
-            --font-size-lg: 18px;
-            --font-size-xl: 24px;
-            
-            /* 阴影 */
-            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3);
-            --shadow-md: 0 2px 6px 2px rgba(60,64,67,0.15);
-            --shadow-lg: 0 4px 12px 4px rgba(60,64,67,0.15);
-            
-            /* 圆角 */
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-        }
-        
-        /* 基础重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: var(--font-main);
-            font-size: var(--font-size-base);
-            color: var(--dark-color);
-            background-color: var(--light-color);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            line-height: 1.5;
-        }
-        
-        /* 顶部导航样式 */
-        .app-header {
-            background-color: var(--dark-color);
-            color: var(--white);
-            padding: var(--spacing-medium);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow-md);
-            z-index: 10;
-        }
-        
-        .logo {
-            font-size: var(--font-size-xl);
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo-icon {
-            margin-right: var(--spacing-small);
-            color: var(--secondary-color);
-        }
-        
-        .user-nav {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-medium);
-        }
-        
-        .nav-button {
-            background: none;
-            border: none;
-            color: var(--white);
-            cursor: pointer;
-            padding: var(--spacing-xs) var(--spacing-small);
-            border-radius: var(--radius-sm);
-            transition: background-color 0.2s;
-        }
-        
-        .nav-button:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-        
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        /* 主容器布局 */
-        .app-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        
-        /* 侧边栏样式 */
-        .sidebar {
-            width: 240px;
-            background-color: var(--white);
-            border-right: 1px solid var(--gray-medium);
-            padding: var(--spacing-medium) 0;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-        
-        .nav-menu {
-            list-style: none;
-        }
-        
-        .nav-menu li {
-            padding: var(--spacing-small) var(--spacing-medium);
-            margin: 0 var(--spacing-small);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s;
-        }
-        
-        .nav-menu li:hover {
-            background-color: var(--gray-light);
-        }
-        
-        .nav-menu li.active {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-        
-        .nav-menu li i {
-            margin-right: var(--spacing-small);
-            width: 20px;
-            text-align: center;
-        }
-        
-        .sidebar-footer {
-            margin-top: auto;
-            padding: var(--spacing-medium);
-            border-top: 1px solid var(--gray-medium);
-        }
-        
-        /* 主工作区样式 */
-        .workspace {
-            flex: 1;
-            padding: var(--spacing-large);
-            overflow-y: auto;
-            background-color: var(--light-color);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* 工具箱区域 */
-        .toolbox-section {
-            background-color: var(--white);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-large);
-            margin-bottom: var(--spacing-large);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .section-title {
-            font-size: var(--font-size-lg);
-            margin-bottom: var(--spacing-large);
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-        }
-        
-        .section-title i {
-            margin-right: var(--spacing-small);
-            color: var(--primary-color);
-        }
-        
-        .toolbox-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: var(--spacing-large);
-        }
-        
-        .toolbox-item {
-            background-color: var(--gray-light);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-medium);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .toolbox-item:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .toolbox-icon {
-            width: 60px;
-            height: 60px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--spacing-medium);
-            color: var(--white);
-            font-size: 24px;
-        }
-        
-        .toolbox-name {
-            font-weight: bold;
-            margin-bottom: var(--spacing-xs);
-        }
-        
-        .toolbox-desc {
-            font-size: 12px;
-            color: var(--gray-dark);
-        }
-        
-        /* 案例库区域 */
-        .case-library {
-            background-color: var(--white);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-large);
-            margin-bottom: var(--spacing-large);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        /* AI+化学案例库特有样式 */
-        .filter-section {
-            background: var(--gray-light);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-        
-        .case-card {
-            transition: transform 0.3s;
-            height: 100%;
-            border: 1px solid var(--gray-medium);
-            border-radius: var(--radius-md);
-        }
-        
-        .case-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .tech-tag {
-            font-size: 0.8rem;
-        }
-        
-        .card-footer a {
-            color: var(--gray-dark);
-            text-decoration: none;
-        }
-        
-        /* AI聊天框 */
-        .ai-chatbox {
-            background-color: var(--white);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            flex-direction: column;
-            height: 300px;
-            margin-top: auto;
-        }
-        
-        .chat-header {
-            padding: var(--spacing-medium);
-            border-bottom: 1px solid var(--gray-medium);
-            display: flex;
-            align-items: center;
-        }
-        
-        .chat-header i {
-            margin-right: var(--spacing-small);
-            color: var(--primary-color);
-        }
-        
-        .chat-messages {
-            flex: 1;
-            padding: var(--spacing-medium);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .message {
-            margin-bottom: var(--spacing-medium);
-            max-width: 80%;
-            padding: var(--spacing-medium);
-            border-radius: var(--radius-md);
-        }
-        
-        .message.ai {
-            align-self: flex-start;
-            background-color: var(--gray-light);
-            border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
-        }
-        
-        .message.user {
-            align-self: flex-end;
-            background-color: var(--primary-color);
-            color: var(--white);
-            border-radius: var(--radius-md) 0 var(--radius-md) var(--radius-md);
-        }
-        
-        .chat-input {
-            display: flex;
-            padding: var(--spacing-medium);
-            border-top: 1px solid var(--gray-medium);
-        }
-        
-        .chat-input input {
-            flex: 1;
-            padding: var(--spacing-medium);
-            border: 1px solid var(--gray-medium);
-            border-radius: var(--radius-md) 0 0 var(--radius-md);
-            outline: none;
-        }
-        
-        .chat-input button {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: none;
-            padding: 0 var(--spacing-large);
-            border-radius: 0 var(--radius-md) var(--radius-md) 0;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .chat-input button:hover {
-            background-color: var(--primary-dark);
-        }
-        
-        /* 模态框样式 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-content {
-            background-color: var(--white);
-            border-radius: var(--radius-md);
-            width: 80%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: var(--spacing-large);
-            box-shadow: var(--shadow-lg);
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: var(--spacing-medium);
-            right: var(--spacing-medium);
-            font-size: var(--font-size-lg);
-            cursor: pointer;
-            color: var(--gray-dark);
-        }
-        
-        .modal-title {
-            font-size: var(--font-size-lg);
-            margin-bottom: var(--spacing-large);
-            color: var(--primary-dark);
-        }
-        
-        /* 分子可视化3D容器 */
-        .molecule-viewer {
-            width: 100%;
-            height: 300px;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .molecule-viewer::before {
-            content: "3D分子可视化区域";
-            position: absolute;
-            color: #999;
-            font-size: 16px;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                padding: 0;
-                overflow-x: auto;
-            }
-            
-            .nav-menu {
-                display: flex;
-            }
-            
-            .nav-menu li {
-                white-space: nowrap;
-            }
-            
-            .sidebar-footer {
-                display: none;
-            }
-            
-            .toolbox-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-            
-            .modal-content {
-                width: 95%;
-                padding: var(--spacing-medium);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <!-- 顶部导航栏 -->
     <header class="app-header">
         <div class="logo">
@@ -471,8 +19,8 @@
         </div>
         <nav class="user-nav">
             <button class="nav-button" id="help-button"><i class="fas fa-question-circle"></i> 帮助</button>
-            <button class="nav-button" id="settings-button"><i class="fas fa-cog"></i> 设置</button>
-            <div class="user-avatar" id="user-avatar">
+            <button class="nav-button" id="settings-button" disabled><i class="fas fa-cog"></i> 设置</button>
+            <div class="user-avatar" id="user-avatar" title="登录功能待开发">
                 <i class="fas fa-user"></i>
             </div>
         </nav>
@@ -482,28 +30,23 @@
         <!-- 左侧导航 -->
         <aside class="sidebar">
             <ul class="nav-menu">
-                <li class="active" data-section="home">
+                <li class="active" data-page="home">
                     <i class="fas fa-home"></i>
                     <span>首页</span>
                 </li>
-                <li data-section="toolbox">
+                <li data-page="toolbox">
                     <i class="fas fa-toolbox"></i>
                     <span>工具箱</span>
                 </li>
-                <li data-section="cases">
+                <li data-page="cases">
                     <i class="fas fa-book"></i>
                     <span>案例库</span>
                 </li>
-                <li data-section="ai-lab">
+                <li data-page="ai-lab">
                     <i class="fas fa-robot"></i>
-                    <span>AI实验室</span>
-                </li>
-                <li data-section="data-analysis">
-                    <i class="fas fa-chart-line"></i>
-                    <span>数据分析</span>
+                    <span>AI助手</span>
                 </li>
             </ul>
-            
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-name">访客用户</div>
@@ -514,151 +57,344 @@
 
         <!-- 主工作区 -->
         <main class="workspace">
-            <!-- 工具箱区域 -->
-            <div class="toolbox-section" id="toolbox-section">
-                <div class="section-title">
-                    <i class="fas fa-toolbox"></i>
-                    <span>化学工具箱</span>
+            
+            <!-- 页面1: 首页 (默认显示) -->
+            <div id="page-home" class="workspace-page active-page">
+                <!-- 工具箱区域 (首页版) -->
+                <div class="toolbox-section" id="toolbox-section-home">
+                    <div class="section-title">
+                        <i class="fas fa-toolbox"></i>
+                        <span>Syslab APP 工具箱</span>
+                    </div>
+                    <div class="toolbox-grid">
+                        <!-- CST 建模 APP -->
+                        <div class="toolbox-item" data-tool="syslab-cst">
+                            <div class="toolbox-icon" style="background-color: #0d47a1;">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                            <div class="toolbox-name">CST 超表面建模</div>
+                            <div class="toolbox-desc">相位计算并生成VBS脚本 (Syslab APP)</div>
+                        </div>
+                        <!-- 动力学 APP -->
+                        <div class="toolbox-item" data-tool="syslab-kinetics">
+                            <div class="toolbox-icon" style="background-color: #34a853;">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="toolbox-name">化学动力学Pro</div>
+                            <div class="toolbox-desc">A+B ⇌ C+D 可逆反应模拟 (Syslab APP)</div>
+                        </div>
+                         <!-- 占位工具 -->
+                        <div class="toolbox-item" data-tool="orbital">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-atom"></i>
+                            </div>
+                            <div class="toolbox-name">分子轨道可视化</div>
+                            <div class="toolbox-desc">原子轨道分布图和电子云可视化</div>
+                        </div>
+                        <div class="toolbox-item" data-tool="electrochemistry">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="toolbox-name">电化学参数计算</div>
+                            <div class="toolbox-desc">最小二乘迭代解法计算动力学参数</div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="toolbox-grid">
-                    <!-- 根据报告中的工具箱功能添加具体项目 -->
-                    <div class="toolbox-item" data-tool="orbital">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-atom"></i>
-                        </div>
-                        <div class="toolbox-name">分子轨道可视化</div>
-                        <div class="toolbox-desc">原子轨道分布图和电子云可视化</div>
+                <!-- 案例库区域 (首页版) -->
+                <div class="case-library" id="case-library-home">
+                    <div class="section-title">
+                        <i class="fas fa-book"></i>
+                        <span>AI+化学 热门案例</span>
                     </div>
-                    
-                    <div class="toolbox-item" data-tool="titration">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-vial"></i>
-                        </div>
-                        <div class="toolbox-name">酸碱滴定优化</div>
-                        <div class="toolbox-desc">利用AI优化实验减小误差</div>
+                    <!-- (新) 列表式案例 -->
+                    <div class="list-group" id="cases-container-home">
+                        <!-- JS 动态加载 -->
                     </div>
-                    
-                    <div class="toolbox-item" data-tool="electrochemistry">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <div class="toolbox-name">电化学参数计算</div>
-                        <div class="toolbox-desc">最小二乘迭代解法计算动力学参数</div>
+                </div>
+                <!-- AI聊天框 (首页版) -->
+                <div class="ai-chatbox" id="ai-chatbox-home">
+                    <!-- ... AI 聊天框的 HTML (与原版相同) ... -->
+                    <div class="chat-header">
+                        <i class="fas fa-robot"></i>
+                        <span>化学AI助手 (模拟)</span>
                     </div>
-                    
-                    <div class="toolbox-item" data-tool="reaction-path">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-project-diagram"></i>
+                    <div class="chat-messages" id="chat-messages-home">
+                        <div class="message ai">
+                            您好！我是化学AI助手，可以回答您关于化学计算、分子可视化等各种问题。
                         </div>
-                        <div class="toolbox-name">反应路径规划</div>
-                        <div class="toolbox-desc">基于多智能体系统的合成路径优化</div>
                     </div>
-                    
-                    <div class="toolbox-item" data-tool="kinetics">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div class="toolbox-name">反应动力学模拟</div>
-                        <div class="toolbox-desc">F+HCl碰撞解离过程动态展示</div>
-                    </div>
-                    
-                    <div class="toolbox-item" data-tool="catalyst">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                        <div class="toolbox-name">催化剂预测</div>
-                        <div class="toolbox-desc">机器学习算法选择合成氨催化剂</div>
-                    </div>
-                    
-                    <!-- 新增有机分子数据采集与分析工具 -->
-                    <div class="toolbox-item" data-tool="molecule-analysis">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <div class="toolbox-name">有机分子数据分析</div>
-                        <div class="toolbox-desc">从PubChem/ChEMBL采集数据并计算分子性质</div>
-                    </div>
-                    
-                    <!-- 新增分子结构预测工具 -->
-                    <div class="toolbox-item" data-tool="structure-prediction">
-                        <div class="toolbox-icon">
-                            <i class="fas fa-shapes"></i>
-                        </div>
-                        <div class="toolbox-name">分子结构预测</div>
-                        <div class="toolbox-desc">基于AI的分子3D结构预测与优化</div>
+                    <div class="chat-input">
+                        <input type="text" id="chat-input-home" placeholder="输入您的问题...">
+                        <button id="send-message-home"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
-            
-            <!-- 案例库区域 -->
-            <div class="case-library" id="case-library">
-                <div class="section-title">
-                    <i class="fas fa-book"></i>
-                    <span>AI+化学案例库</span>
-                </div>
-                
-                <!-- 搜索筛选区 -->
-                <div class="filter-section">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="search-input" placeholder="搜索案例...">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="domain-filter">
-                                <option value="">所有领域</option>
-                                <option value="药物发现">药物发现</option>
-                                <option value="催化化学">催化化学</option>
-                                <option value="合成化学">合成化学</option>
-                                <option value="材料化学">材料化学</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="tech-filter">
-                                <option value="">所有技术</option>
-                                <option value="GNN">图神经网络</option>
-                                <option value="RL">强化学习</option>
-                                <option value="生成模型">生成模型</option>
-                                <option value="NLP">自然语言处理</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 案例展示区 -->
-                <div class="row row-cols-1 row-cols-md-3 g-4" id="cases-container">
-                    <!-- 案例卡片将通过JS动态加载 -->
+            <!-- 页面2: 工具箱详情页 (Syslab CST) -->
+            <div id="page-tool-cst" class="workspace-page tool-detail-page">
+                <button class="btn btn-light btn-sm btn-back" data-target="toolbox"><i class="fas fa-arrow-left me-2"></i>返回工具箱</button>
+                <div class="section-title mt-3">
+                    <i class="fas fa-cube" style="color: #0d47a1;"></i>
+                    <span>CST 超表面自动建模</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <h4>功能介绍</h4>
+                        <p>本工具是为电磁超表面设计而开发的 Syslab 桌面应用 (APP)。它集成了参数化的相位分布计算（如涡旋波、波束偏转、馈源补偿）和 CST Studio Suite™ 的自动化建模接口。</p>
+                        <p>用户在 APP 中输入所需物理参数后，APP 会自动计算出超表面阵列所需的相位矩阵。之后，APP 会**生成一个 `.vbs` 脚本**。用户只需将此脚本拖入 CST 模板工程中，即可在几秒钟内自动完成整个阵列的创建，极大提升了仿真建模效率。</p>
+                        
+                        <h4 class="mt-4">下载与安装指南 (Syslab)</h4>
+                        <ol class="install-steps">
+                            <li>
+                                <strong>下载 APP 文件:</strong>
+                                <p>从 GitHub 仓库下载所有 APP 安装文件 (一个包含 .exe 和依赖项的文件夹)。</p>
+                                <a href="https://github.com/polarbearYc/syslabapp.git" class="btn btn-success" target="_blank">
+                                    <i class="fab fa-github me-2"></i>访问 GitHub 仓库
+                                </a>
+                            </li>
+                            <li>
+                                <strong>放置 APP 文件夹:</strong>
+                                <p>将下载并解压的 APP 文件夹（例如 `CstModelerTool`）复制到 Syslab 推荐的用户 APP 目录中：<br><code>C:/Users/Public/TongYuan/syslab-julia/Apps/</code></p>
+                            </li>
+                            <li>
+                                <strong>注册 APP:</strong>
+                                <p>打开 Syslab，点击顶部 Ribbon 菜单的 "APP" -> "安装 APP"。</p>
+                            </li>
+                            <li>
+                                <strong>填写配置:</strong>
+                                <p>在弹出的对话框中，填写以下**关键信息**：</p>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><b>APP 名称:</b> <code>CST 建模工具</code> (必须与启动脚本匹配)</li>
+                                    <li class="list-group-item"><b>APP 启动脚本:</b> <code>SyslabApp.start("CST 建模工具")</code></li>
+                                    <li class="list-group-item"><b>APP 可执行文件路径:</b> (点击“浏览”，选择您在步骤2中放置的 `.exe` 文件)</li>
+                                    <li class="list-group-item"><b>APP 图标:</b> (可选, 浏览并选择文件夹中的 `.ico` 文件)</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>完成:</strong>
+                                <p>点击“确定”。您的 APP 图标现在会出现在 Syslab 的 "APP" 菜单页中，点击即可运行。</p>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">APP 概览</h5>
+                                <p class="card-text">一个基于 PyQt5 和 Syslab SDK 开发的桌面应用，用于自动化电磁仿真建模。</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>相位计算 (A→B)</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>VBS 脚本导出</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>100% 离线运行</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Syslab 工作区交互</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- AI聊天框 -->
-            <div class="ai-chatbox" id="ai-chatbox">
-                <div class="chat-header">
-                    <i class="fas fa-robot"></i>
-                    <span>化学AI助手</span>
+            <!-- 页面3: 工具箱详情页 (Syslab 动力学) -->
+            <div id="page-tool-kinetics" class="workspace-page tool-detail-page">
+                <button class="btn btn-light btn-sm btn-back" data-target="toolbox"><i class="fas fa-arrow-left me-2"></i>返回工具箱</button>
+                <div class="section-title mt-3">
+                    <i class="fas fa-chart-line" style="color: #34a853;"></i>
+                    <span>化学动力学Pro (A + B ⇌ C + D)</span>
                 </div>
-                
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message ai">
-                        您好！我是化学AI助手，可以回答您关于化学计算、分子可视化等各种问题。
+                 <div class="row">
+                    <div class="col-md-7">
+                        <h4>功能介绍</h4>
+                        <p>本工具是为物理化学教学和研究而开发的 Syslab 桌面应用 (APP)。它提供了一个交互式沙盒，用于模拟高级的**二级可逆反应 (`A + B ⇌ C + D`)**。</p>
+                        <p>APP 采用专业的 Python 科学计算库 (<strong>SciPy</strong>) 作为后端求解器，通过高精度常微分方程 (ODE) 求解器实时计算四种物质（A, B, C, D）的浓度变化。用户可以通过滑动条**实时调整正向速率 (`kf`) 和逆向速率 (`kr`)**，并立即在图表上观察到“化学平衡”的移动。APP 还会自动计算并显示关键的**平衡常数 (`K_eq`)**。</p>
+                        
+                        <h4 class="mt-4">下载与安装指南 (Syslab)</h4>
+                        <ol class="install-steps">
+                            <li>
+                                <strong>下载 APP 文件:</strong>
+                                <p>从 GitHub 仓库下载所有 APP 安装文件 (一个包含 .exe 和依赖项的文件夹)。</p>
+                                <a href="https://github.com/polarbearYc/syslab2.git" class="btn btn-success" target="_blank">
+                                    <i class="fab fa-github me-2"></i>访问 GitHub 仓库
+                                </a>
+                            </li>
+                            <li>
+                                <strong>放置 APP 文件夹:</strong>
+                                <p>将下载并解压的 APP 文件夹（例如 `KineticsSimPro`）复制到 Syslab 推荐的用户 APP 目录中：<br><code>C:/Users/Public/TongYuan/syslab-julia/Apps/</code></p>
+                            </li>
+                            <li>
+                                <strong>注册 APP:</strong>
+                                <p>打开 Syslab，点击顶部 Ribbon 菜单的 "APP" -> "安装 APP"。</p>
+                            </li>
+                            <li>
+                                <strong>填写配置:</strong>
+                                <p>在弹出的对话框中，填写以下**关键信息**：</p>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><b>APP 名称:</b> <code>化学动力学Pro</code> (必须与启动脚本匹配)</li>
+                                    <li class="list-group-item"><b>APP 启动脚本:</b> <code>SyslabApp.start("化学动力学Pro")</code></li>
+                                    <li class="list-group-item"><b>APP 可执行文件路径:</b> (点击“浏览”，选择您在步骤2中放置的 `.exe` 文件)</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>完成:</strong>
+                                <p>点击“确定”。您的 APP 图标现在会出现在 Syslab 的 "APP" 菜单页中，点击即可运行。</p>
+                            </li>
+                        </ol>
                     </div>
-                    <div class="message ai">
-                        例如，您可以问我："如何计算电化学动力学参数？" 或 "展示水分子的3D结构"。
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">APP 概览</h5>
+                                <p class="card-text">一个基于 PyQt5, Matplotlib 和 SciPy 开发的桌面应用，用于高级化学动力学模拟。</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>SciPy 高精度求解</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>实时参数调整</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>化学平衡可视化</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>100% 离线运行</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Syslab 工作区交互</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="chat-input">
-                    <input type="text" id="chat-input" placeholder="输入您的问题...">
-                    <button id="send-message"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
+
+            <!-- 页面4: 完整工具箱页 -->
+            <div id="page-toolbox" class="workspace-page">
+                <div class="toolbox-section">
+                    <div class="section-title">
+                        <i class="fas fa-toolbox"></i>
+                        <span>化学工具箱</span>
+                    </div>
+                    <div class="toolbox-grid">
+                        <!-- CST 建模 APP -->
+                        <div class="toolbox-item" data-tool="syslab-cst">
+                            <div class="toolbox-icon" style="background-color: #0d47a1;">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                            <div class="toolbox-name">CST 超表面建模</div>
+                            <div class="toolbox-desc">相位计算并生成VBS脚本 (Syslab APP)</div>
+                        </div>
+                        <!-- 动力学 APP -->
+                        <div class="toolbox-item" data-tool="syslab-kinetics">
+                            <div class="toolbox-icon" style="background-color: #34a853;">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="toolbox-name">化学动力学Pro</div>
+                            <div class="toolbox-desc">A+B ⇌ C+D 可逆反应模拟 (Syslab APP)</div>
+                        </div>
+                        <!-- 占位工具 -->
+                        <div class="toolbox-item" data-tool="orbital">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-atom"></i>
+                            </div>
+                            <div class="toolbox-name">分子轨道可视化</div>
+                            <div class="toolbox-desc">原子轨道分布图和电子云可视化</div>
+                        </div>
+                        <div class="toolbox-item" data-tool="titration">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-vial"></i>
+                            </div>
+                            <div class="toolbox-name">酸碱滴定优化</div>
+                            <div class="toolbox-desc">利用AI优化实验减小误差</div>
+                        </div>
+                        <div class="toolbox-item" data-tool="electrochemistry">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="toolbox-name">电化学参数计算</div>
+                            <div class="toolbox-desc">最小二乘迭代解法计算动力学参数</div>
+                        </div>
+                        <div class="toolbox-item" data-tool="reaction-path">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="toolbox-name">反应路径规划</div>
+                            <div class="toolbox-desc">基于多智能体系统的合成路径优化</div>
+                        </div>
+                        <div class="toolbox-item" data-tool="catalyst">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="toolbox-name">催化剂预测</div>
+                            <div class="toolbox-desc">机器学习算法选择合成氨催化剂</div>
+                        </div>
+                        <div class="toolbox-item" data-tool="molecule-analysis">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="toolbox-name">有机分子数据分析</div>
+                            <div class="toolbox-desc">从PubChem/ChEMBL采集数据</div>
+                        </div>
+                        <div class="toolbox-item" data-tool="structure-prediction">
+                            <div class="toolbox-icon">
+                                <i class="fas fa-shapes"></i>
+                            </div>
+                            <div class="toolbox-name">分子结构预测</div>
+                            <div class="toolbox-desc">基于AI的分子3D结构预测与优化</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面5: 完整案例库页 -->
+            <div id="page-cases" class="workspace-page">
+                <div class="case-library">
+                    <div class="section-title">
+                        <i class="fas fa-book"></i>
+                        <span>AI+化学 案例文献库</span>
+                    </div>
+                    
+                    <!-- 搜索筛选区 -->
+                    <div class="filter-section">
+                        <div class="row g-2">
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="search-input" placeholder="在 40+ 篇文献中搜索...">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="domain-filter">
+                                    <!-- JS 动态加载 -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="tech-filter">
+                                    <!-- JS 动态加载 -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- (新) 案例展示区 (列表) -->
+                    <div class="list-group" id="cases-container-full">
+                        <!-- JS 动态加载 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面6: AI 助手页 -->
+            <div id="page-ai-lab" class="workspace-page">
+                <!-- AI聊天框 (完整页) -->
+                <div class="ai-chatbox" id="ai-chatbox-full">
+                    <div class="chat-header">
+                        <i class="fas fa-robot"></i>
+                        <span>化学AI助手 (模拟)</span>
+                    </div>
+                    <div class="chat-messages" id="chat-messages-full">
+                        <div class="message ai">
+                            您好！我是化学AI助手，可以回答您关于化学计算、分子可视化等各种问题。
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chat-input-full" placeholder="输入您的问题...">
+                        <button id="send-message-full"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
     
-    <!-- 模态框 -->
+    <!-- 模态框 (用于帮助和未实现的工具) -->
     <div class="modal" id="tool-modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal" id="close-modal-button">&times;</span>
             <div class="modal-title" id="modal-title">工具详情</div>
             <div id="modal-content">
                 <!-- 动态内容将在这里显示 -->
@@ -666,1196 +402,8 @@
         </div>
     </div>
 
+    <!-- 外部 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // 真实案例数据（来自顶级期刊和工业实践）
-        const cases = [
-            {
-                id: 1,
-                title: "Halicin抗生素发现",
-                domain: "药物发现",
-                technique: "生成模型",
-                description: "MIT使用生成对抗网络发现新型广谱抗生素Halicin，可对抗耐药菌",
-                improvement: "对MRSA抑制效果提升90%",
-                image: "https://news.mit.edu/sites/default/files/styles/news_article__image_gallery/public/images/202002/MIT-Antibiotics-01-press.jpg",
-                source: "https://www.cell.com/cell/fulltext/S0092-8674(20)30102-1"
-            },
-            {
-                id: 2,
-                title: "MOF催化剂筛选",
-                domain: "催化化学",
-                technique: "GNN",
-                description: "伯克利实验室开发3D-GNN模型，筛选出CO2还原性能提升40%的Ni-MOF催化剂",
-                improvement: "催化活性提升40%",
-                image: "https://www.science.org/cms/10.1126/science.aax1566/asset/8f4b1e1a-8b1b-4f8a-9e9a-7f8b9b8b9b8b/assets/images/large/science.aax1566-f1.jpg",
-                source: "https://www.science.org/doi/10.1126/science.aax1566"
-            },
-            {
-                id: 3,
-                title: "逆合成路线规划",
-                domain: "合成化学",
-                technique: "NLP",
-                description: "IBM RXN系统使用Transformer模型实现80%准确率的逆合成分析",
-                improvement: "路线设计效率提升10倍",
-                image: "https://www.res.ibm.com/wp-content/uploads/2020/03/RXN-for-Chemistry-1.jpg",
-                source: "https://pubs.acs.org/doi/10.1021/acscentsci.9b00576"
-            },
-            {
-                id: 4,
-                title: "流动化学优化",
-                domain: "合成化学",
-                technique: "RL",
-                description: "MIT开发强化学习系统，自动优化流动化学反应条件",
-                improvement: "收率从68%提升至89%",
-                image: "https://www.science.org/cms/10.1126/science.aay2387/asset/7e4b1e1a-8b1b-4f8a-9e9a-7f8b9b8b9b8b/assets/images/large/science.aay2387-f1.jpg",
-                source: "https://www.science.org/doi/10.1126/science.aay2387"
-            },
-            {
-                id: 5,
-                title: "钙钛矿材料设计",
-                domain: "材料化学",
-                technique: "随机森林",
-                description: "通过机器学习预测钙钛矿太阳能电池材料的带隙和稳定性",
-                improvement: "筛选效率提升50倍",
-                image: "https://www.nature.com/articles/s41560-021-00839-0/figures/1",
-                source: "https://www.nature.com/articles/s41560-021-00839-0"
-            },
-            {
-                id: 6,
-                title: "分子生成与优化",
-                domain: "药物发现",
-                technique: "生成模型",
-                description: "Insilico Medicine使用生成式AI设计新型纤维化药物分子",
-                improvement: "临床前实验显示显著活性",
-                image: "https://www.nature.com/articles/s41587-019-0224-x/figures/1",
-                source: "https://www.nature.com/articles/s41587-019-0224-x"
-            }
-        ];
-
-        // 渲染案例卡片
-        function renderCases(filteredCases = cases) {
-            const container = document.getElementById('cases-container');
-            container.innerHTML = '';
-
-            filteredCases.forEach(item => {
-                const card = `
-                    <div class="col">
-                        <div class="card case-card h-100">
-                            <img src="${item.image}" class="card-img-top" alt="${item.title}" style="height: 180px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title">${item.title}</h5>
-                                <span class="badge bg-primary tech-tag mb-2">${item.technique}</span>
-                                <p class="card-text">${item.description}</p>
-                            </div>
-                            <div class="card-footer bg-transparent">
-                                <small class="text-muted">效果提升: ${item.improvement} | 
-                                <a href="${item.source}" target="_blank">查看论文</a></small>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
-        }
-
-        // 筛选功能
-        function filterCases() {
-            const domain = document.getElementById('domain-filter').value;
-            const tech = document.getElementById('tech-filter').value;
-            const search = document.getElementById('search-input').value.toLowerCase();
-
-            const filtered = cases.filter(item => {
-                return (!domain || item.domain.includes(domain)) &&
-                       (!tech || item.technique.includes(tech)) &&
-                       (!search || item.title.toLowerCase().includes(search) ||
-                        item.description.toLowerCase().includes(search));
-            });
-
-            renderCases(filtered);
-        }
-
-        // 打开工具模态框
-        function openToolModal(tool) {
-            const modal = document.getElementById('tool-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalContent = document.getElementById('modal-content');
-            
-            // 根据工具类型设置内容和标题
-            switch(tool) {
-                case 'orbital':
-                    modalTitle.textContent = '分子轨道可视化工具';
-                    modalContent.innerHTML = `
-                        <h3>原子轨道分布图和电子云可视化</h3>
-                        <p>此工具可以展示不同量子数的原子轨道分布图和电子云密度图。</p>
-                        
-                        <div class="molecule-viewer"></div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="quantum-numbers">选择量子数：</label>
-                            <select id="quantum-numbers" class="form-select">
-                                <option value="1s">1s轨道</option>
-                                <option value="2s">2s轨道</option>
-                                <option value="2p">2p轨道</option>
-                                <option value="3d">3d轨道</option>
-                                <option value="4f">4f轨道</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="molecule-input">分子SMILES：</label>
-                            <input type="text" id="molecule-input" class="form-control" placeholder="输入分子SMILES表达式">
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button id="visualize-button" class="btn btn-primary flex-grow-1">
-                                <i class="fas fa-eye"></i> 可视化
-                            </button>
-                            <button id="export-orbitals" class="btn btn-outline-secondary">
-                                <i class="fas fa-download"></i> 导出图像
-                            </button>
-                        </div>
-                        
-                        <div class="alert alert-info mt-3">
-                            <i class="fas fa-info-circle"></i> 
-                            此工具基于量子力学计算，可以展示s、p、d、f轨道的电子云分布和分子轨道相互作用。
-                        </div>
-                    `;
-                    
-                    // 添加事件监听器
-                    setTimeout(() => {
-                        document.getElementById('visualize-button').addEventListener('click', function() {
-                            const quantumNumber = document.getElementById('quantum-numbers').value;
-                            const smiles = document.getElementById('molecule-input').value.trim();
-                            
-                            if (!smiles) {
-                                alert('请输入分子SMILES表达式');
-                                return;
-                            }
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在生成${quantumNumber}轨道可视化...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> ${quantumNumber}轨道可视化完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示3D分子轨道)</p>
-                                    </div>
-                                `;
-                            }, 1500);
-                        });
-                        
-                        document.getElementById('export-orbitals').addEventListener('click', function() {
-                            alert('模拟操作: 轨道图像已导出为PNG文件');
-                        });
-                    }, 100);
-                    break;
-                    
-                case 'titration':
-                    modalTitle.textContent = '酸碱滴定优化工具';
-                    modalContent.innerHTML = `
-                        <h3>利用AI优化酸碱滴定实验</h3>
-                        <p>此工具可以通过AI算法分析滴定数据，自动校正误差，提高实验精度。</p>
-                        
-                        <div class="molecule-viewer" style="height: 250px;"></div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="titration-type">滴定类型：</label>
-                                    <select id="titration-type" class="form-select">
-                                        <option value="acid-base">酸碱滴定</option>
-                                        <option value="redox">氧化还原滴定</option>
-                                        <option value="complex">配位滴定</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="titration-data">上传滴定数据：</label>
-                                    <input type="file" id="titration-data" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button id="optimize-button" class="btn btn-primary w-100">
-                            <i class="fas fa-magic"></i> 开始优化分析
-                        </button>
-                        
-                        <div class="alert alert-success mt-3" id="optimization-result" style="display: none;">
-                            <i class="fas fa-check-circle"></i> 
-                            <span id="result-text">AI分析完成，建议调整终点判断标准为±0.03pH</span>
-                        </div>
-                    `;
-                    
-                    setTimeout(() => {
-                        document.getElementById('optimize-button').addEventListener('click', function() {
-                            const resultDiv = document.getElementById('optimization-result');
-                            resultDiv.style.display = 'none';
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在使用AI优化滴定曲线...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> 滴定曲线优化完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示优化前后的滴定曲线对比)</p>
-                                    </div>
-                                `;
-                                
-                                document.getElementById('result-text').textContent = 
-                                    `AI分析完成，建议调整终点判断标准为±0.03pH，预计可将误差从2.1%降低至0.5%`;
-                                resultDiv.style.display = 'block';
-                            }, 2000);
-                        });
-                    }, 100);
-                    break;
-                    
-                case 'electrochemistry':
-                    modalTitle.textContent = '电化学参数计算工具';
-                    modalContent.innerHTML = `
-                        <h3>最小二乘迭代解法计算动力学参数</h3>
-                        <p>此工具可以计算交换电流密度、传递系数等电化学动力学参数。</p>
-                        
-                        <div class="molecule-viewer" style="height: 250px;"></div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="voltage-data">电压数据 (V)：</label>
-                                    <input type="text" id="voltage-data" class="form-control" 
-                                        placeholder="输入电压数据，用逗号分隔" value="0.1,0.2,0.3,0.4,0.5">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="current-data">电流数据 (mA)：</label>
-                                    <input type="text" id="current-data" class="form-control" 
-                                        placeholder="输入电流数据，用逗号分隔" value="1.2,2.5,4.1,6.8,10.5">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button id="calculate-button" class="btn btn-primary w-100 mb-3">
-                            <i class="fas fa-calculator"></i> 计算动力学参数
-                        </button>
-                        
-                        <div class="card" id="calculation-results" style="display: none;">
-                            <div class="card-header bg-success text-white">
-                                计算结果
-                            </div>
-                            <div class="card-body">
-                                <table class="table table-sm">
-                                    <tbody>
-                                        <tr>
-                                            <th>交换电流密度 (mA/cm²)</th>
-                                            <td id="j0-result">-</td>
-                                        </tr>
-                                        <tr>
-                                            <th>传递系数 α</th>
-                                            <td id="alpha-result">-</td>
-                                        </tr>
-                                        <tr>
-                                            <th>标准速率常数 (cm/s)</th>
-                                            <td id="k0-result">-</td>
-                                        </tr>
-                                        <tr>
-                                            <th>拟合优度 (R²)</th>
-                                            <td id="r2-result">-</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    `;
-                    
-                    setTimeout(() => {
-                        document.getElementById('calculate-button').addEventListener('click', function() {
-                            const voltageData = document.getElementById('voltage-data').value;
-                            const currentData = document.getElementById('current-data').value;
-                            
-                            if (!voltageData || !currentData) {
-                                alert('请输入电压和电流数据');
-                                return;
-                            }
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在使用最小二乘法拟合数据...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> 数据拟合完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示Tafel曲线和拟合结果)</p>
-                                    </div>
-                                `;
-                                
-                                // 显示计算结果
-                                document.getElementById('j0-result').textContent = '2.45';
-                                document.getElementById('alpha-result').textContent = '0.52';
-                                document.getElementById('k0-result').textContent = '1.83×10⁻³';
-                                document.getElementById('r2-result').textContent = '0.998';
-                                document.getElementById('calculation-results').style.display = 'block';
-                            }, 2000);
-                        });
-                    }, 100);
-                    break;
-                    
-                case 'reaction-path':
-                    modalTitle.textContent = '反应路径规划工具';
-                    modalContent.innerHTML = `
-                        <h3>基于多智能体系统的合成路径优化</h3>
-                        <p>此工具可以自动规划最优的有机合成路线，考虑收率、成本和环保性。</p>
-                        
-                        <div class="molecule-viewer" style="height: 250px;"></div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="target-molecule">目标分子SMILES：</label>
-                            <input type="text" id="target-molecule" class="form-control" 
-                                placeholder="输入目标分子SMILES表达式">
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="starting-materials">起始原料SMILES（可选）：</label>
-                            <textarea id="starting-materials" class="form-control" 
-                                placeholder="每行输入一个起始原料的SMILES"></textarea>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="optimize-yield" checked>
-                                    <label class="form-check-label" for="optimize-yield">
-                                        优化收率
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="optimize-cost" checked>
-                                    <label class="form-check-label" for="optimize-cost">
-                                        优化成本
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="optimize-green" checked>
-                                    <label class="form-check-label" for="optimize-green">
-                                        绿色化学
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button id="plan-button" class="btn btn-primary w-100 mt-3">
-                            <i class="fas fa-project-diagram"></i> 规划合成路径
-                        </button>
-                        
-                        <div class="mt-3" id="path-results" style="display: none;">
-                            <h5>最优合成路径</h5>
-                            <div class="path-steps" id="path-steps">
-                                <!-- 路径步骤将在这里动态生成 -->
-                            </div>
-                            <div class="path-summary mt-3">
-                                <p>预计总收率: <span id="total-yield">85%</span></p>
-                                <p>预计总成本: <span id="total-cost">¥120</span></p>
-                                <p>绿色评分: <span id="green-score">8.5/10</span></p>
-                            </div>
-                        </div>
-                    `;
-                    
-                    setTimeout(() => {
-                        document.getElementById('plan-button').addEventListener('click', function() {
-                            const target = document.getElementById('target-molecule').value.trim();
-                            
-                            if (!target) {
-                                alert('请输入目标分子SMILES');
-                                return;
-                            }
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在使用AI规划合成路径...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> 合成路径规划完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示反应路径图)</p>
-                                    </div>
-                                `;
-                                
-                                // 生成模拟路径步骤
-                                const stepsDiv = document.getElementById('path-steps');
-                                stepsDiv.innerHTML = `
-                                    <div class="card mb-2">
-                                        <div class="card-body p-2">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span>1. 硝化反应</span>
-                                                <span class="badge bg-success">收率 92%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card mb-2">
-                                        <div class="card-body p-2">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span>2. 还原反应</span>
-                                                <span class="badge bg-success">收率 88%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card mb-2">
-                                        <div class="card-body p-2">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span>3. 酰化反应</span>
-                                                <span class="badge bg-success">收率 95%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                
-                                document.getElementById('path-results').style.display = 'block';
-                            }, 2500);
-                        });
-                    }, 100);
-                    break;
-                    
-                case 'kinetics':
-                    modalTitle.textContent = '反应动力学模拟工具';
-                    modalContent.innerHTML = `
-                        <h3>F+HCl碰撞解离过程动态展示</h3>
-                        <p>此工具可以模拟和可视化分子碰撞解离的动力学过程。</p>
-                        
-                        <div class="molecule-viewer"></div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="collision-energy">碰撞能量 (eV)：</label>
-                                    <input type="range" class="form-range" id="collision-energy" min="0.1" max="5" step="0.1" value="1.5">
-                                    <div class="d-flex justify-content-between">
-                                        <small>0.1 eV</small>
-                                        <small id="energy-value">1.5 eV</small>
-                                        <small>5.0 eV</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="impact-parameter">碰撞参数：</label>
-                                    <input type="range" class="form-range" id="impact-parameter" min="0" max="10" step="0.5" value="3">
-                                    <div class="d-flex justify-content-between">
-                                        <small>正面碰撞</small>
-                                        <small id="parameter-value">3.0</small>
-                                        <small>擦边碰撞</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button id="simulate-button" class="btn btn-primary flex-grow-1">
-                                <i class="fas fa-play"></i> 开始模拟
-                            </button>
-                            <button id="export-simulation" class="btn btn-outline-secondary">
-                                <i class="fas fa-video"></i> 导出动画
-                            </button>
-                        </div>
-                        
-                        <div class="card mt-3" id="kinetics-results" style="display: none;">
-                            <div class="card-header">
-                                模拟结果
-                            </div>
-                            <div class="card-body">
-                                <p>解离概率: <span id="dissociation-prob">68%</span></p>
-                                <p>平均散射角度: <span id="scattering-angle">45°</span></p>
-                                <p>能量转移效率: <span id="energy-transfer">72%</span></p>
-                            </div>
-                        </div>
-                    `;
-                    
-                    setTimeout(() => {
-                        // 更新滑块值显示
-                        document.getElementById('collision-energy').addEventListener('input', function() {
-                            document.getElementById('energy-value').textContent = this.value + ' eV';
-                        });
-                        
-                        document.getElementById('impact-parameter').addEventListener('input', function() {
-                            document.getElementById('parameter-value').textContent = this.value;
-                        });
-                        
-                        document.getElementById('simulate-button').addEventListener('click', function() {
-                            const energy = document.getElementById('collision-energy').value;
-                            const parameter = document.getElementById('impact-parameter').value;
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在模拟碰撞能量 ${energy}eV 的反应...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> 动力学模拟完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示分子碰撞动画)</p>
-                                    </div>
-                                `;
-                                
-                                // 更新结果
-                                const prob = Math.min(90, Math.round(20 + energy * 30)).toString();
-                                const angle = Math.round(30 + parameter * 5).toString();
-                                const transfer = Math.min(95, Math.round(50 + energy * 15)).toString();
-                                
-                                document.getElementById('dissociation-prob').textContent = prob + '%';
-                                document.getElementById('scattering-angle').textContent = angle + '°';
-                                document.getElementById('energy-transfer').textContent = transfer + '%';
-                                document.getElementById('kinetics-results').style.display = 'block';
-                            }, 2000);
-                        });
-                        
-                        document.getElementById('export-simulation').addEventListener('click', function() {
-                            alert('模拟操作: 碰撞动画已导出为MP4文件');
-                        });
-                    }, 100);
-                    break;
-                    
-                case 'catalyst':
-                    modalTitle.textContent = '催化剂预测工具';
-                    modalContent.innerHTML = `
-                        <h3>机器学习算法选择合成氨催化剂</h3>
-                        <p>此工具可以预测不同金属组合对合成氨反应的催化活性。</p>
-                        
-                        <div class="molecule-viewer" style="height: 250px;"></div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="metal-1">主金属：</label>
-                                    <select id="metal-1" class="form-select">
-                                        <option value="Fe">铁 (Fe)</option>
-                                        <option value="Ru">钌 (Ru)</option>
-                                        <option value="Co">钴 (Co)</option>
-                                        <option value="Ni">镍 (Ni)</option>
-                                        <option value="Mo">钼 (Mo)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="metal-2">助催化剂：</label>
-                                    <select id="metal-2" class="form-select">
-                                        <option value="">无</option>
-                                        <option value="K">钾 (K)</option>
-                                        <option value="Ca">钙 (Ca)</option>
-                                        <option value="Al">铝 (Al)</option>
-                                        <option value="Ce">铈 (Ce)</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="support">载体：</label>
-                            <select id="support" class="form-select">
-                                <option value="Al2O3">氧化铝 (Al₂O₃)</option>
-                                <option value="MgO">氧化镁 (MgO)</option>
-                                <option value="TiO2">二氧化钛 (TiO₂)</option>
-                                <option value="C">活性炭 (C)</option>
-                            </select>
-                        </div>
-                        
-                        <button id="predict-button" class="btn btn-primary w-100">
-                            <i class="fas fa-brain"></i> 预测催化活性
-                        </button>
-                        
-                        <div class="card mt-3" id="catalyst-results" style="display: none;">
-                            <div class="card-header">
-                                预测结果
-                            </div>
-                            <div class="card-body">
-                                <div class="progress mb-2" style="height: 30px;">
-                                    <div id="activity-bar" class="progress-bar progress-bar-striped bg-success" 
-                                        role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                        <span id="activity-value">0%</span>
-                                    </div>
-                                </div>
-                                <p>预测活性: <span id="activity-score">0.00</span> (NH₃ mol/g·h)</p>
-                                <p>活化能: <span id="activation-energy">0.00</span> eV</p>
-                                <p>选择性: <span id="selectivity">0%</span></p>
-                            </div>
-                        </div>
-                    `;
-                    
-                    setTimeout(() => {
-                        document.getElementById('predict-button').addEventListener('click', function() {
-                            const metal1 = document.getElementById('metal-1').value;
-                            const metal2 = document.getElementById('metal-2').value;
-                            const support = document.getElementById('support').value;
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在预测 ${metal1}${metal2 ? '-'+metal2 : ''}/${support} 催化剂的活性...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> 预测完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示催化剂结构)</p>
-                                    </div>
-                                `;
-                                
-                                // 生成模拟结果
-                                const baseActivity = {
-                                    'Fe': 45, 'Ru': 85, 'Co': 30, 'Ni': 25, 'Mo': 40
-                                };
-                                const promoterEffect = {
-                                    'K': 15, 'Ca': 10, 'Al': 5, 'Ce': 20, '': 0
-                                };
-                                const supportEffect = {
-                                    'Al2O3': 0, 'MgO': 5, 'TiO2': 10, 'C': -5
-                                };
-                                
-                                let activity = baseActivity[metal1] + promoterEffect[metal2] + supportEffect[support];
-                                activity = Math.max(5, Math.min(100, activity));
-                                
-                                const activationEnergy = (2.5 - activity / 50).toFixed(2);
-                                const selectivity = Math.min(99, activity + 10).toString();
-                                
-                                // 更新UI
-                                const bar = document.getElementById('activity-bar');
-                                bar.style.width = activity + '%';
-                                bar.setAttribute('aria-valuenow', activity);
-                                document.getElementById('activity-value').textContent = activity + '%';
-                                document.getElementById('activity-score').textContent = (activity * 0.02).toFixed(2);
-                                document.getElementById('activation-energy').textContent = activationEnergy;
-                                document.getElementById('selectivity').textContent = selectivity + '%';
-                                document.getElementById('catalyst-results').style.display = 'block';
-                            }, 2000);
-                        });
-                    }, 100);
-                    break;
-                    
-                case 'molecule-analysis':
-                    modalTitle.textContent = '有机分子数据采集与分析';
-                    modalContent.innerHTML = `
-                        <h3>从PubChem/ChEMBL采集数据并计算分子性质</h3>
-                        <p>此工具可以从公开数据库下载分子数据，并计算分子量、LogP、极化率等物理化学性质。</p>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header bg-primary text-white">
-                                        <i class="fas fa-download"></i> 数据采集
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="form-group mb-3">
-                                            <label for="data-source">数据源：</label>
-                                            <select id="data-source" class="form-select">
-                                                <option value="pubchem">PubChem</option>
-                                                <option value="chembl">ChEMBL</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="molecule-id">分子ID/SMILES：</label>
-                                            <input type="text" id="molecule-id" class="form-control" placeholder="输入PubChem CID或SMILES">
-                                        </div>
-                                        <button id="fetch-button" class="btn btn-primary">
-                                            <i class="fas fa-cloud-download-alt"></i> 获取分子数据
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header bg-success text-white">
-                                        <i class="fas fa-calculator"></i> 性质计算
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="form-group mb-3">
-                                            <label for="smiles-input">SMILES表达式：</label>
-                                            <input type="text" id="smiles-input" class="form-control" placeholder="输入SMILES表达式">
-                                        </div>
-                                        <button id="calculate-button" class="btn btn-success">
-                                            <i class="fas fa-calculator"></i> 计算分子性质
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <i class="fas fa-chart-bar"></i> 结果可视化
-                                </div>
-                                <div class="card-body">
-                                    <div id="molecule-results" style="min-height: 200px;">
-                                        <p class="text-muted">计算结果将显示在这里...</p>
-                                    </div>
-                                    <div class="mt-3">
-                                        <button id="export-excel" class="btn btn-outline-secondary me-2">
-                                            <i class="fas fa-file-excel"></i> 导出Excel
-                                        </button>
-                                        <button id="export-csv" class="btn btn-outline-secondary">
-                                            <i class="fas fa-file-csv"></i> 导出CSV
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert alert-info mt-4">
-                            <i class="fas fa-info-circle"></i> 
-                            此功能基于RDKit和Mordred库实现，可以计算分子量、LogP、极化率等20+种物理化学性质。
-                        </div>
-                    `;
-                    
-                    // 添加事件监听器
-                    setTimeout(() => {
-                        document.getElementById('fetch-button').addEventListener('click', function() {
-                            const source = document.getElementById('data-source').value;
-                            const id = document.getElementById('molecule-id').value.trim();
-                            
-                            if (!id) {
-                                alert('请输入分子ID或SMILES表达式');
-                                return;
-                            }
-                            
-                            const resultsDiv = document.getElementById('molecule-results');
-                            resultsDiv.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在从${source === 'pubchem' ? 'PubChem' : 'ChEMBL'}获取数据...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟API调用
-                            setTimeout(() => {
-                                const mockData = {
-                                    'pubchem': {
-                                        name: '苯',
-                                        smiles: 'c1ccccc1',
-                                        source: 'PubChem CID: 241',
-                                        formula: 'C₆H₆',
-                                        weight: '78.11 g/mol'
-                                    },
-                                    'chembl': {
-                                        name: '环己烷',
-                                        smiles: 'C1CCCCC1',
-                                        source: 'ChEMBL ID: CHEMBL15983',
-                                        formula: 'C₆H₁₂',
-                                        weight: '84.16 g/mol'
-                                    }
-                                };
-                                
-                                resultsDiv.innerHTML = `
-                                    <h5>获取成功</h5>
-                                    <p>分子名称: ${mockData[source].name}</p>
-                                    <p>分子式: ${mockData[source].formula}</p>
-                                    <p>分子量: ${mockData[source].weight}</p>
-                                    <p>SMILES: <code>${mockData[source].smiles}</code></p>
-                                    <p>数据来源: ${mockData[source].source}</p>
-                                    <p class="text-success"><i class="fas fa-check-circle"></i> 数据已准备好用于分析</p>
-                                `;
-                                
-                                // 自动填充到计算框
-                                document.getElementById('smiles-input').value = mockData[source].smiles;
-                            }, 1500);
-                        });
-                        
-                        document.getElementById('calculate-button').addEventListener('click', function() {
-                            const smiles = document.getElementById('smiles-input').value.trim();
-                            
-                            if (!smiles) {
-                                alert('请输入有效的SMILES表达式');
-                                return;
-                            }
-                            
-                            const resultsDiv = document.getElementById('molecule-results');
-                            resultsDiv.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在计算分子性质...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                const mockResults = {
-                                    'c1ccccc1': {
-                                        '分子量(g/mol)': 78.11,
-                                        '脂水分配系数(LogP)': 2.13,
-                                        '摩尔折射率': 26.20,
-                                        '极化率(Å³)': 10.28,
-                                        '氢键供体数': 0,
-                                        '氢键受体数': 0,
-                                        '可旋转键数': 0,
-                                        '拓扑极性表面积': 0.00
-                                    },
-                                    'C1CCCCC1': {
-                                        '分子量(g/mol)': 84.16,
-                                        '脂水分配系数(LogP)': 3.44,
-                                        '摩尔折射率': 27.70,
-                                        '极化率(Å³)': 11.45,
-                                        '氢键供体数': 0,
-                                        '氢键受体数': 0,
-                                        '可旋转键数': 0,
-                                        '拓扑极性表面积': 0.00
-                                    },
-                                    'default': {
-                                        '分子量(g/mol)': (Math.random() * 200 + 50).toFixed(2),
-                                        '脂水分配系数(LogP)': (Math.random() * 5).toFixed(2),
-                                        '摩尔折射率': (Math.random() * 30 + 10).toFixed(2),
-                                        '极化率(Å³)': (Math.random() * 15 + 5).toFixed(2),
-                                        '氢键供体数': Math.floor(Math.random() * 5),
-                                        '氢键受体数': Math.floor(Math.random() * 5),
-                                        '可旋转键数': Math.floor(Math.random() * 10),
-                                        '拓扑极性表面积': (Math.random() * 150).toFixed(2)
-                                    }
-                                };
-                                
-                                const results = mockResults[smiles] || mockResults['default'];
-                                
-                                let html = '<h5>计算结果</h5><table class="table table-striped"><tbody>';
-                                for (const [key, value] of Object.entries(results)) {
-                                    html += `<tr><th>${key}</th><td>${value}</td></tr>`;
-                                }
-                                html += '</tbody></table>';
-                                
-                                resultsDiv.innerHTML = html;
-                            }, 2000);
-                        });
-                        
-                        document.getElementById('export-excel').addEventListener('click', function() {
-                            alert('模拟操作: 数据已导出为Excel文件');
-                        });
-                        
-                        document.getElementById('export-csv').addEventListener('click', function() {
-                            alert('模拟操作: 数据已导出为CSV文件');
-                        });
-                    }, 100);
-                    break;
-                    
-                case 'structure-prediction':
-                    modalTitle.textContent = '分子结构预测工具';
-                    modalContent.innerHTML = `
-                        <h3>基于AI的分子3D结构预测与优化</h3>
-                        <p>此工具可以根据分子式或SMILES预测最稳定的3D分子构型。</p>
-                        
-                        <div class="molecule-viewer"></div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="structure-input">分子SMILES：</label>
-                            <input type="text" id="structure-input" class="form-control" placeholder="输入分子SMILES表达式">
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="charge">电荷：</label>
-                            <select id="charge" class="form-select">
-                                <option value="0">0</option>
-                                <option value="1">+1</option>
-                                <option value="-1">-1</option>
-                                <option value="2">+2</option>
-                                <option value="-2">-2</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="multiplicity">自旋多重度：</label>
-                            <select id="multiplicity" class="form-select">
-                                <option value="1">单重态 (1)</option>
-                                <option value="2">双重态 (2)</option>
-                                <option value="3">三重态 (3)</option>
-                            </select>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button id="predict-structure" class="btn btn-primary flex-grow-1">
-                                <i class="fas fa-atom"></i> 预测结构
-                            </button>
-                            <button id="optimize-structure" class="btn btn-success">
-                                <i class="fas fa-magic"></i> 优化结构
-                            </button>
-                        </div>
-                        
-                        <div class="card mt-3" id="structure-results" style="display: none;">
-                            <div class="card-header">
-                                结构信息
-                            </div>
-                            <div class="card-body">
-                                <p>预测能量: <span id="energy-value">0.00</span> Hartree</p>
-                                <p>点群对称性: <span id="symmetry">C1</span></p>
-                                <p>偶极矩: <span id="dipole">0.00</span> Debye</p>
-                            </div>
-                        </div>
-                    `;
-                    
-                    setTimeout(() => {
-                        document.getElementById('predict-structure').addEventListener('click', function() {
-                            const smiles = document.getElementById('structure-input').value.trim();
-                            const charge = document.getElementById('charge').value;
-                            const multiplicity = document.getElementById('multiplicity').value;
-                            
-                            if (!smiles) {
-                                alert('请输入分子SMILES表达式');
-                                return;
-                            }
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在预测3D分子结构...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> 结构预测完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示3D分子结构)</p>
-                                    </div>
-                                `;
-                                
-                                // 生成模拟结果
-                                const energy = (-Math.random() * 100 - 50).toFixed(2);
-                                const symmetries = ['C1', 'C2', 'C2v', 'Cs', 'D2h'];
-                                const symmetry = symmetries[Math.floor(Math.random() * symmetries.length)];
-                                const dipole = (Math.random() * 5).toFixed(2);
-                                
-                                // 更新UI
-                                document.getElementById('energy-value').textContent = energy;
-                                document.getElementById('symmetry').textContent = symmetry;
-                                document.getElementById('dipole').textContent = dipole;
-                                document.getElementById('structure-results').style.display = 'block';
-                            }, 2000);
-                        });
-                        
-                        document.getElementById('optimize-structure').addEventListener('click', function() {
-                            const smiles = document.getElementById('structure-input').value.trim();
-                            
-                            if (!smiles) {
-                                alert('请先预测分子结构');
-                                return;
-                            }
-                            
-                            const viewer = document.querySelector('.molecule-viewer');
-                            viewer.innerHTML = `
-                                <div class="text-center py-4">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2">正在优化分子几何结构...</p>
-                                </div>
-                            `;
-                            
-                            // 模拟计算
-                            setTimeout(() => {
-                                viewer.innerHTML = `
-                                    <div class="text-center">
-                                        <p class="text-success"><i class="fas fa-check-circle"></i> 结构优化完成</p>
-                                        <p class="text-muted">(实际应用中这里将显示优化后的3D分子结构)</p>
-                                    </div>
-                                `;
-                                
-                                // 更新能量值
-                                const currentEnergy = parseFloat(document.getElementById('energy-value').textContent);
-                                const newEnergy = (currentEnergy - Math.random() * 0.5).toFixed(2);
-                                document.getElementById('energy-value').textContent = newEnergy;
-                            }, 1500);
-                        });
-                    }, 100);
-                    break;
-                    
-                default:
-                    modalTitle.textContent = '工具详情';
-                    modalContent.innerHTML = '<p>此工具详情将在后续版本中提供</p>';
-            }
-            
-            modal.style.display = 'flex';
-        }
-        
-        // 发送聊天消息
-        function sendMessage() {
-            const message = chatInput.value.trim();
-            if (message === '') return;
-            
-            // 添加用户消息
-            addMessage(message, 'user');
-            chatInput.value = '';
-            
-            // 模拟AI回复
-            setTimeout(() => {
-                const responses = [
-                    "这是一个很好的问题。在化学工具箱中，您可以使用分子轨道可视化工具来查看不同轨道的形状和分布。",
-                    "根据我的分析，您提到的电化学参数可以通过工具箱中的电化学参数计算工具来求解。",
-                    "酸碱滴定优化工具可以帮助您减小实验误差，提高测量精度。",
-                    "我建议您查看案例库中的相关案例，那里有详细的操作步骤和示例。",
-                    "这个问题涉及到多个化学概念，您是否需要更详细的解释？"
-                ];
-                
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                addMessage(randomResponse, 'ai');
-            }, 1000);
-        }
-        
-        // 添加聊天消息
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // 初始化案例库
-            renderCases();
-
-            // 绑定筛选事件
-            document.getElementById('domain-filter').addEventListener('change', filterCases);
-            document.getElementById('tech-filter').addEventListener('change', filterCases);
-            document.getElementById('search-input').addEventListener('input', filterCases);
-
-            // 导航菜单点击事件
-            const navItems = document.querySelectorAll('.nav-menu li');
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // 移除所有active类
-                    navItems.forEach(i => i.classList.remove('active'));
-                    // 添加当前active类
-                    this.classList.add('active');
-                    
-                    // 获取对应的section
-                    const section = this.getAttribute('data-section');
-                    
-                    // 隐藏所有内容区域
-                    document.querySelectorAll('.workspace > *').forEach(el => {
-                        el.style.display = 'none';
-                    });
-                    
-                    // 显示选中的内容区域
-                    if (section === 'home') {
-                        document.getElementById('toolbox-section').style.display = 'block';
-                        document.getElementById('case-library').style.display = 'block';
-                        document.getElementById('ai-chatbox').style.display = 'flex';
-                    } else if (section === 'toolbox') {
-                        document.getElementById('toolbox-section').style.display = 'block';
-                        document.getElementById('case-library').style.display = 'none';
-                        document.getElementById('ai-chatbox').style.display = 'none';
-                    } else if (section === 'cases') {
-                        document.getElementById('toolbox-section').style.display = 'none';
-                        document.getElementById('case-library').style.display = 'block';
-                        document.getElementById('ai-chatbox').style.display = 'none';
-                    } else if (section === 'ai-lab') {
-                        document.getElementById('toolbox-section').style.display = 'none';
-                        document.getElementById('case-library').style.display = 'none';
-                        document.getElementById('ai-chatbox').style.display = 'flex';
-                    }
-                });
-            });
-            
-            // 工具箱项目点击事件
-            const toolboxItems = document.querySelectorAll('.toolbox-item');
-            toolboxItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const tool = this.getAttribute('data-tool');
-                    openToolModal(tool);
-                });
-            });
-            
-            // 模态框关闭按钮
-            document.querySelector('.close-modal').addEventListener('click', function() {
-                document.getElementById('tool-modal').style.display = 'none';
-            });
-            
-            // 点击模态框外部关闭
-            window.addEventListener('click', function(event) {
-                if (event.target === document.getElementById('tool-modal')) {
-                    document.getElementById('tool-modal').style.display = 'none';
-                }
-            });
-            
-            // AI聊天功能
-            const chatInput = document.getElementById('chat-input');
-            const sendButton = document.getElementById('send-message');
-            const chatMessages = document.getElementById('chat-messages');
-            
-            sendButton.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-            
-            // 帮助按钮
-            document.getElementById('help-button').addEventListener('click', function() {
-                alert('欢迎使用AI化学工具箱！\n\n左侧导航可以切换不同功能区域，点击工具箱中的项目可以查看详情，AI助手可以回答您的化学问题。');
-            });
-            
-            // 设置按钮
-            document.getElementById('settings-button').addEventListener('click', function() {
-                alert('设置功能将在后续版本中提供');
-            });
-            
-            // 用户头像
-            document.getElementById('user-avatar').addEventListener('click', function() {
-                alert('用户登录功能将在后续版本中提供');
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
